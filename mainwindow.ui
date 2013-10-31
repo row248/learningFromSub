@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>637</width>
+    <height>361</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Improve your language!</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>637</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuSubtitles">
+    <property name="title">
+     <string>Subtitles</string>
+    </property>
+    <widget class="QMenu" name="menuResent">
+     <property name="title">
+      <string>Resent</string>
+     </property>
+    </widget>
+    <addaction name="actionOpen"/>
+    <addaction name="menuResent"/>
+   </widget>
+   <widget class="QMenu" name="menuDatabase">
+    <property name="title">
+     <string>Database</string>
+    </property>
+    <addaction name="actionShow_worlds"/>
+   </widget>
+   <addaction name="menuSubtitles"/>
+   <addaction name="menuDatabase"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionShow_worlds">
+   <property name="text">
+    <string>Show worlds</string>
+   </property>
+  </action>
+  <action name="actionTEST">
+   <property name="text">
+    <string>TEST!!!</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
