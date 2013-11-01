@@ -30,6 +30,7 @@ void MainWindow::toSubView()
         addRecentFileAction(filename);
         subview->setFileName(filename);
         this->setCentralWidget(subview);
+        updateStatusBar(filename);
     }
 }
 
@@ -40,7 +41,7 @@ void MainWindow::toSubView(QAction *act)
     addRecentFileAction(filename);
     subview->setFileName(filename);
     this->setCentralWidget(subview);
-    is_subview = true;
+    updateStatusBar(filename);
 }
 
 void MainWindow::init()
@@ -48,13 +49,11 @@ void MainWindow::init()
     // Fill @recentFileActions container
     loadRecentFileActions();
     updateResetMenu();
-    is_subview = false;
 
     subview = new SubtitlesView();
 
     connect(ui->actionOpen , SIGNAL(triggered()), this, SLOT(toSubView()));
     connect(ui->menuResent, SIGNAL(triggered(QAction*)), this, SLOT(toSubView(QAction*)));
-    connect(subview, SIGNAL(setStatusBar(QString)), this, SLOT(updateStatusBar(QString)));
 }
 
 void MainWindow::updateResetMenu()
@@ -68,28 +67,9 @@ void MainWindow::updateResetMenu()
     }
 }
 
-void MainWindow::updateStatusBar(QString str)
+void MainWindow::updateStatusBar(QString filename)
 {
-    ui->statusBar->showMessage(str);
-    QLabel *label = new QLabel("12/500");
-    ui->statusBar->addWidget(label,2);
-    qDebug() << str;
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if (is_subview) {
-        switch (event->key()) {
-        case Qt::Key_Left:
-            subview->previousWord();
-            break;
-        case Qt::Key_Right:
-            subview->nextWord();
-            break;
-        default:
-            qDebug() << event->key();
-        }
-    }
+    ui->statusBar->showMessage(QFileInfo(filename).fileName());
 }
 
 void MainWindow::addRecentFileAction(QString filename)

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStringList>
 #include <QSettings>
+#include <QLabel>
 
 class SubtitlesView;
 
@@ -24,10 +25,7 @@ public slots:
     // From resent files
     void toSubView(QAction *act);
     void updateResetMenu();
-    void updateStatusBar(QString str);
-
-protected:
-    void keyPressEvent(QKeyEvent *event);
+    void updateStatusBar(QString filename);
 
 private:
     void init();
@@ -41,7 +39,6 @@ private:
     QStringList recent_files;
     QList<QAction *> recentFileActions;
     QSettings *settings;
-    bool is_subview;
 };
 
 #endif // MAINWINDOW_H

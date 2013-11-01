@@ -4,20 +4,24 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = LearningFromSub
 TEMPLATE = app
-
+QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    subtitlesview.cpp
+    subtitlesview.cpp \
+    subservice.cpp \
+    translater.cpp
 
 HEADERS  += mainwindow.h \
-    subtitlesview.h
+    subtitlesview.h \
+    subservice.h \
+    translater.h
 
 FORMS    += mainwindow.ui \
     subtitlesview.ui

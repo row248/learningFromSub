@@ -2,6 +2,11 @@
 #define SUBTITLESVIEW_H
 
 #include <QWidget>
+#include <QLabel>
+
+class SubService;
+struct WordInfo;
+class Translater;
 
 namespace Ui {
 class SubtitlesView;
@@ -19,16 +24,28 @@ public:
 public slots:
     void nextWord();
     void previousWord();
+    void showTranslate(QString str);
 
-signals:
-    void setStatusBar(QString str);
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     void init();
+    void updateUi(WordInfo &info);
+
+public slots:
+    void update();
+
+public:
+    QString word;
 
 private:
     Ui::SubtitlesView *ui;
     QString filename;
+    SubService *subserv;
+    QString index;
+    Translater *translater;
+
 };
 
 #endif // SUBTITLESVIEW_H
