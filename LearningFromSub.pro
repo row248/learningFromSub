@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network multimedia
+QT       += core gui network multimedia sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     subtitlesview.cpp \
     subservice.cpp \
-    translater.cpp
+    translater.cpp \
+    sqlprovider.cpp
 
 HEADERS  += mainwindow.h \
     subtitlesview.h \
     subservice.h \
-    translater.h
+    translater.h \
+    sqlprovider.h
 
 FORMS    += mainwindow.ui \
     subtitlesview.ui

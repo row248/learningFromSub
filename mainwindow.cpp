@@ -84,10 +84,10 @@ void MainWindow::addRecentFileAction(QString filename)
     saveRecentFileNames();
 }
 
+// TODO: Delete not using filenames from settings
 void MainWindow::loadRecentFileActions()
 {
     int size = settings->beginReadArray("recent_files");
-    qDebug() << size;
     QString data; // hold data from array indexes
     for (int i=0; i<size; ++i) {
         settings->setArrayIndex(i);
