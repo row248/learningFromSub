@@ -44,7 +44,7 @@ QMap<QString, int> SubService::eatFile()
 
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "error", file.errorString());
+        QMessageBox::information(0, "Error", file.errorString());
 
     QTextStream in(&file);
     QString fileData = in.readAll();

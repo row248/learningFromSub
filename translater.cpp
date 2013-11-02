@@ -9,22 +9,34 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <QFile>
+
+#include <QtMultimedia/QMediaPlayer>
 
 Translater::Translater()
 {
+    mplayer = new QMediaPlayer();
 }
 
 void Translater::translate(QString word)
 {
-    // From eng to rus
-    url = "http://www.translate.google.com/translate_a/t?client=x&text=" + word + "&hl=en&sl=en&tl=ru";
-    nam = new QNetworkAccessManager();
-    connect(nam, SIGNAL(finished(QNetworkReply*)), this, SLOT(reply(QNetworkReply*)));
+    QNetworkAccessManager *nam = new QNetworkAccessManager();
 
-    nam->get(QNetworkRequest(url));
+    // From eng to rus
+    QUrl url_toTranslate = "http://www.translate.google.com/translate_a/t?client=x&text=" + word + "&hl=en&sl=en&tl=ru";
+    connect(nam, SIGNAL(finished(QNetworkReply*)), this, SLOT(translate_reply(QNetworkReply*)));
+
+    nam->get(QNetworkRequest(url_toTranslate));
 }
 
-void Translater::reply(QNetworkReply *reply)
+void Translater::sound(QString word)
+{
+    mplayer->setMedia(QNetworkRequest(QUrl("http://www.translate.google.com/translate_tts?ie=UTF-8&q=" + word + "&tl=en")));
+    mplayer->setVolume(100);
+    mplayer->play();
+}
+
+void Translater::translate_reply(QNetworkReply *reply)
 {
     QJsonDocument json = QJsonDocument::fromJson( reply->readAll() );
     QString translate;
@@ -62,3 +74,4 @@ void Translater::reply(QNetworkReply *reply)
 
     emit gotTranslate(translate);
 }
+

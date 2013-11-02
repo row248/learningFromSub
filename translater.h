@@ -4,6 +4,7 @@
 #include <QString>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QUrl>
+#include <QtMultimedia/QMediaPlayer>
 
 class Translater : public QObject
 {
@@ -11,16 +12,16 @@ class Translater : public QObject
 public:
     Translater();
     void translate(QString word);
+    void sound(QString word);
 
 signals:
     void gotTranslate(QString str);
 
 public slots:
-    void reply(QNetworkReply* reply);
+    void translate_reply(QNetworkReply* reply);
 
 private:
-    QNetworkAccessManager* nam;
-    QUrl url;
+    QMediaPlayer *mplayer;
 };
 
 #endif // TRANSLATER_H

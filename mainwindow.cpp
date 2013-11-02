@@ -87,13 +87,19 @@ void MainWindow::addRecentFileAction(QString filename)
 void MainWindow::loadRecentFileActions()
 {
     int size = settings->beginReadArray("recent_files");
+    qDebug() << size;
     QString data; // hold data from array indexes
     for (int i=0; i<size; ++i) {
-        recentFileActions << new QAction(this);
         settings->setArrayIndex(i);
         data = settings->value("filename").toString();
 
-        // add to QAction container
+        // Check if file exists
+        QFile file(data);
+        if (!file.exists())
+            continue;
+
+        // add QActions to list
+        recentFileActions << new QAction(this);
         recentFileActions[i]->setData(data);
         recentFileActions[i]->setText( QFileInfo(data).fileName() );
     }

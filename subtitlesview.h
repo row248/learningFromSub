@@ -24,7 +24,13 @@ public:
 public slots:
     void nextWord();
     void previousWord();
+    void playSound();
+
+    // If pressed key
     void showTranslate(QString str);
+
+    // If clicked button
+    void showTranslate();
 
 protected:
     void keyPressEvent(QKeyEvent *event);

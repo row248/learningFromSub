@@ -62,6 +62,16 @@ void SubtitlesView::showTranslate(QString str)
     ui->translate->setHtml(str);
 }
 
+void SubtitlesView::showTranslate()
+{
+    translater->translate(word);
+}
+
+void SubtitlesView::playSound()
+{
+    translater->sound(word);
+}
+
 void SubtitlesView::update()
 {
     WordInfo word = subserv->current();
@@ -87,6 +97,8 @@ void SubtitlesView::init()
 
     // Translate events
     connect(translater, SIGNAL(gotTranslate(QString)), this, SLOT(showTranslate(QString)));
+    connect(ui->btn_translate, SIGNAL(clicked()), this, SLOT(showTranslate()));
+    connect(ui->btn_sound, SIGNAL(clicked()), this, SLOT(playSound()));
 }
 
 void SubtitlesView::updateUi(WordInfo &info)
