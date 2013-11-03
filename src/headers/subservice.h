@@ -11,6 +11,8 @@ struct WordInfo {
     int count;
 };
 
+class SqlProvider;
+
 class SubService : public QObject
 {
 Q_OBJECT
@@ -20,6 +22,7 @@ public:
     WordInfo next();
     WordInfo prev();
     WordInfo current();
+    bool is_favorite(SqlProvider &db);
 
 private:
     // Return QMap without dublicate words with ther appearance count
@@ -30,6 +33,7 @@ public slots:
     void mostRare();
     void mostOften();
     void random();
+    void matchDb(SqlProvider &db);
 
 private:
     WordInfo fillWordInfo();

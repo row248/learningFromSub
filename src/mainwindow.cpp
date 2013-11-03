@@ -58,12 +58,13 @@ void MainWindow::init()
 
 void MainWindow::updateResetMenu()
 {
-    QListIterator<QAction *> it(recentFileActions);
-    // reverse
-    it.toBack();
-    // Maximum 5 items
-    for (int i=0; it.hasPrevious() && i < 5; i++) {
-        ui->menuResent->addAction(it.previous());
+    // Clear all old actions
+    ui->menuResent->clear();
+    for (int i=0; i < recentFileActions.count() && i < 5; ++i) {
+        // Check if file exists
+        if ( QFileInfo(recentFileActions.at(i)->data().toString()).exists() ) {
+            ui->menuResent->addAction(recentFileActions.at(i));
+        }
     }
 }
 
@@ -77,7 +78,7 @@ void MainWindow::addRecentFileAction(QString filename)
     QAction *act = new QAction(this);
     act->setData(filename);
     act->setText( QFileInfo(filename).fileName() );
-    recentFileActions << act;
+    recentFileActions.prepend(act);
 
     // Redraw menu && resave filenames
     updateResetMenu();
@@ -89,19 +90,18 @@ void MainWindow::loadRecentFileActions()
 {
     int size = settings->beginReadArray("recent_files");
     QString data; // hold data from array indexes
-    for (int i=0; i<size; ++i) {
+
+    // With limitation of count
+    for (int i=0; i<size && i < 5; ++i) {
         settings->setArrayIndex(i);
         data = settings->value("filename").toString();
 
-        // Check if file exists
-        QFile file(data);
-        if (!file.exists())
-            continue;
-
         // add QActions to list
-        recentFileActions << new QAction(this);
-        recentFileActions[i]->setData(data);
-        recentFileActions[i]->setText( QFileInfo(data).fileName() );
+        QAction *act = new QAction(this);
+        act->setData(data);
+        act->setText( QFileInfo(data).fileName() );
+
+        recentFileActions << act;
     }
     settings->endArray();
 }
@@ -109,9 +109,10 @@ void MainWindow::loadRecentFileActions()
 void MainWindow::saveRecentFileNames()
 {
     settings->beginWriteArray("recent_files");
-    for (int i=0; i<recentFileActions.count(); i++) {
+    int count = recentFileActions.count();
+    for (int i=0; i < count && i < 5; ++i) {
         settings->setArrayIndex(i);
-        settings->setValue( "filename", recentFileActions[i]->data().toString() );
+        settings->setValue( "filename", recentFileActions.at(i)->data().toString() );
     }
     settings->endArray();
 }

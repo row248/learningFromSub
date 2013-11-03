@@ -1,4 +1,5 @@
 #include "headers/subservice.h"
+#include "headers/sqlprovider.h"
 
 #include <QFile>
 #include <QMessageBox>
@@ -35,6 +36,11 @@ WordInfo SubService::prev()
 WordInfo SubService::current()
 {
     return fillWordInfo();
+}
+
+bool SubService::is_favorite(SqlProvider &db)
+{
+    return db.has_word( fillWordInfo().word );
 }
 
 QMap<QString, int> SubService::eatFile()
@@ -105,12 +111,32 @@ void SubService::random()
     }
 }
 
+void SubService::matchDb(SqlProvider &db)
+{
+    QMap<QString, int> appearance = eatFile();
+
+    QStringList wordsFromFile = appearance.keys();
+    QStringList db_words = db.findAllWords();
+
+    // Delete old values
+    words.clear();
+
+    for (int i=0; i < db_words.count(); ++i) {
+        if (wordsFromFile.contains(db_words[i])) {
+            words.append( db_words[i] );
+        }
+    }
+
+    // Because count setted in @eatFile method
+    count = words.count();
+}
+
 WordInfo SubService::fillWordInfo()
 {
     if (index < 0) {
         index = 0;
-    } else if (index > count) {
-        index = count;
+    } else if (index >= count) {
+        index = count - 1;
     }
 
     WordInfo word;

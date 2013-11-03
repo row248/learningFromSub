@@ -18,7 +18,6 @@ bool SqlProvider::has_word(QString word)
         return false;
     }
 
-    QSqlRecord rec = query.record();
     // Has any result?
     if (query.next()) {
         return true;
@@ -29,6 +28,7 @@ bool SqlProvider::has_word(QString word)
 
 bool SqlProvider::addWord(QString word)
 {
+    qDebug() << "add word!";
     QSqlQuery query;
     query.prepare("insert into words (word) values (?)");
     query.bindValue(0, word);
@@ -51,6 +51,22 @@ bool SqlProvider::deleteWord(QString word)
     }
 
     return true;
+}
+
+QStringList SqlProvider::findAllWords()
+{
+    QSqlQuery query;
+    QStringList result;
+    if (!query.exec("select * from words")) {
+        QMessageBox::warning(0, "Error", "Can't delete word from db");
+    }
+
+    QSqlRecord rec = query.record();
+    while (query.next()) {
+        result << query.value(rec.indexOf("word")).toString();
+    }
+
+    return result;
 }
 
 void SqlProvider::prepare()

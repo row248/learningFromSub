@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QLabel>
 
+#include "headers/sqlprovider.h"
+
 class SubService;
 struct WordInfo;
 class Translater;
@@ -25,6 +27,8 @@ public slots:
     void nextWord();
     void previousWord();
     void playSound();
+    void matchDb();
+    void favorite();
 
     // If pressed key
     void showTranslate(QString str);
@@ -51,6 +55,7 @@ private:
     SubService *subserv;
     QString index;
     Translater *translater;
+    SqlProvider db;
 
 };
 

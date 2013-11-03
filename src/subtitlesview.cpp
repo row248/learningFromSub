@@ -2,6 +2,7 @@
 #include "ui_subtitlesview.h"
 #include "headers/subservice.h"
 #include "headers/translater.h"
+#include "headers/sqlprovider.h"
 
 #include <QFile>
 #include <QMessageBox>
@@ -57,6 +58,11 @@ void SubtitlesView::previousWord()
     updateUi(word);
 }
 
+void SubtitlesView::matchDb()
+{
+    subserv->matchDb(db);
+}
+
 void SubtitlesView::showTranslate(QString str)
 {
     ui->translate->setHtml(str);
@@ -70,6 +76,17 @@ void SubtitlesView::showTranslate()
 void SubtitlesView::playSound()
 {
     translater->sound(word);
+}
+
+void SubtitlesView::favorite()
+{
+    if ( ui->btn_favorite->text().startsWith("add", Qt::CaseInsensitive) )
+        db.addWord(word);
+    else
+        db.deleteWord(word);
+
+    // Change favorite button
+    update();
 }
 
 void SubtitlesView::update()
@@ -90,15 +107,22 @@ void SubtitlesView::init()
     connect(ui->btn_mostOften, SIGNAL(clicked()), subserv, SLOT(mostOften()));
     connect(ui->btn_random, SIGNAL(clicked()), subserv, SLOT(random()));
 
+    // For purpose of giving db instance
+    connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(matchDb()));
+
     // Update UI after click to buttons
     connect(ui->btn_mostRare, SIGNAL(clicked()), this, SLOT(update()));
     connect(ui->btn_mostOften, SIGNAL(clicked()), this, SLOT(update()));
     connect(ui->btn_random, SIGNAL(clicked()), this, SLOT(update()));
+    connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(update()));
 
     // Translate events
     connect(translater, SIGNAL(gotTranslate(QString)), this, SLOT(showTranslate(QString)));
     connect(ui->btn_translate, SIGNAL(clicked()), this, SLOT(showTranslate()));
     connect(ui->btn_sound, SIGNAL(clicked()), this, SLOT(playSound()));
+
+    // Add delete word to db
+    connect(ui->btn_favorite, SIGNAL(clicked()), this, SLOT(favorite()));
 }
 
 void SubtitlesView::updateUi(WordInfo &info)
@@ -106,8 +130,16 @@ void SubtitlesView::updateUi(WordInfo &info)
     word = info.word;
 
     // Add +1 for human read
-    index = QString::number(info.index + 1) + "/" + QString::number(info.count + 1);
+    index = QString::number(info.index + 1) + "/" + QString::number(info.count);
 
     ui->word->setText(word);
     ui->index->setText(index);
+
+    // Check if user have word in db
+    bool is_favorite = subserv->is_favorite(db);
+
+    if (is_favorite)
+        ui->btn_favorite->setText("Delete word");
+    else
+        ui->btn_favorite->setText("Add word");
 }
