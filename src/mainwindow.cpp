@@ -62,6 +62,7 @@ void MainWindow::updateResetMenu()
     ui->menuResent->clear();
     for (int i=0; i < recentFileActions.count() && i < 5; ++i) {
         // Check if file exists
+        qDebug() << recentFileActions.at(i)->data().toString();
         if ( QFileInfo(recentFileActions.at(i)->data().toString()).exists() ) {
             ui->menuResent->addAction(recentFileActions.at(i));
         }

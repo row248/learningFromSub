@@ -5,6 +5,8 @@
 #include <QStringList>
 #include <QMap>
 
+const QString NOTHING_FOUND = "Nothing found!";
+
 struct WordInfo {
     QString word;
     int index;
@@ -33,7 +35,9 @@ public slots:
     void mostRare();
     void mostOften();
     void random();
-    void matchDb(SqlProvider &db);
+
+    // If no match exists, i add word @NOTHING_FOUND to @words
+    bool matchDb(SqlProvider &db);
 
 private:
     WordInfo fillWordInfo();

@@ -111,10 +111,12 @@ void SubService::random()
     }
 }
 
-void SubService::matchDb(SqlProvider &db)
+bool SubService::matchDb(SqlProvider &db)
 {
     QMap<QString, int> appearance = eatFile();
 
+    // I'll return this variable. Found we something?
+    bool any = true;
     QStringList wordsFromFile = appearance.keys();
     QStringList db_words = db.findAllWords();
 
@@ -127,8 +129,16 @@ void SubService::matchDb(SqlProvider &db)
         }
     }
 
+    // Nothig found
+    if (!words.count() > 0) {
+        words.append(NOTHING_FOUND);
+        any = false;
+    }
+
     // Because count setted in @eatFile method
     count = words.count();
+
+    return any;
 }
 
 WordInfo SubService::fillWordInfo()

@@ -60,7 +60,13 @@ void SubtitlesView::previousWord()
 
 void SubtitlesView::matchDb()
 {
-    subserv->matchDb(db);
+    bool any = subserv->matchDb(db);
+
+    if (any) {
+        ui->icon->setEnabled(true);
+    } else {
+        ui->icon->setEnabled(false);
+    }
 }
 
 void SubtitlesView::showTranslate(QString str)
@@ -80,10 +86,11 @@ void SubtitlesView::playSound()
 
 void SubtitlesView::favorite()
 {
-    if ( ui->btn_favorite->text().startsWith("add", Qt::CaseInsensitive) )
+    if (ui->icon->toolTip().startsWith("add", Qt::CaseInsensitive)) {
         db.addWord(word);
-    else
+    } else {
         db.deleteWord(word);
+    }
 
     // Change favorite button
     update();
@@ -93,6 +100,12 @@ void SubtitlesView::update()
 {
     WordInfo word = subserv->current();
     updateUi(word);
+}
+
+void SubtitlesView::enableIcon()
+{
+    if (!ui->icon->isEnabled())
+        ui->icon->setEnabled(true);
 }
 
 void SubtitlesView::init()
@@ -107,6 +120,11 @@ void SubtitlesView::init()
     connect(ui->btn_mostOften, SIGNAL(clicked()), subserv, SLOT(mostOften()));
     connect(ui->btn_random, SIGNAL(clicked()), subserv, SLOT(random()));
 
+    // Icon may be disabled if @matchDb will nothig found
+    connect(ui->btn_mostRare, SIGNAL(clicked()), this, SLOT(enableIcon()));
+    connect(ui->btn_mostOften, SIGNAL(clicked()), this, SLOT(enableIcon()));
+    connect(ui->btn_random, SIGNAL(clicked()), this, SLOT(enableIcon()));
+
     // For purpose of giving db instance
     connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(matchDb()));
 
@@ -114,6 +132,7 @@ void SubtitlesView::init()
     connect(ui->btn_mostRare, SIGNAL(clicked()), this, SLOT(update()));
     connect(ui->btn_mostOften, SIGNAL(clicked()), this, SLOT(update()));
     connect(ui->btn_random, SIGNAL(clicked()), this, SLOT(update()));
+
     connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(update()));
 
     // Translate events
@@ -122,7 +141,7 @@ void SubtitlesView::init()
     connect(ui->btn_sound, SIGNAL(clicked()), this, SLOT(playSound()));
 
     // Add delete word to db
-    connect(ui->btn_favorite, SIGNAL(clicked()), this, SLOT(favorite()));
+    connect(ui->icon, SIGNAL(clicked()), this, SLOT(favorite()));
 }
 
 void SubtitlesView::updateUi(WordInfo &info)
@@ -138,8 +157,13 @@ void SubtitlesView::updateUi(WordInfo &info)
     // Check if user have word in db
     bool is_favorite = subserv->is_favorite(db);
 
-    if (is_favorite)
-        ui->btn_favorite->setText("Delete word");
-    else
-        ui->btn_favorite->setText("Add word");
+    if (is_favorite) {
+        ui->icon->setIcon(QIcon("/home/row/Desktop/close.png"));
+        ui->icon->setToolTip("Delete word from data base");
+    } else if (word == NOTHING_FOUND) {
+        ui->icon->setToolTip("Choose another option");
+    } else {
+        ui->icon->setIcon(QIcon("/home/row/Desktop/add.gif"));
+        ui->icon->setToolTip("Add word to data base");
+    }
 }
