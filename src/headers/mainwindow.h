@@ -39,6 +39,7 @@ private:
     QStringList recent_files;
     QList<QAction *> recentFileActions;
     QSettings *settings;
+    QLabel *fileNameStatusBar;
 };
 
 #endif // MAINWINDOW_H

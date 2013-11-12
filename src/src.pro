@@ -21,3 +21,6 @@ HEADERS += headers/mainwindow.h\
 
 FORMS += ui/mainwindow.ui \
     ui/subtitlesview.ui
+
+RESOURCES += \
+    resources/res.qrc

@@ -28,7 +28,6 @@ bool SqlProvider::has_word(QString word)
 
 bool SqlProvider::addWord(QString word)
 {
-    qDebug() << "add word!";
     QSqlQuery query;
     query.prepare("insert into words (word) values (?)");
     query.bindValue(0, word);

@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>add.gif</file>
+        <file>close.png</file>
+    </qresource>
+    <qresource prefix="/qss">
+        <file>favorite_icon.qss</file>
+    </qresource>
+</RCC>

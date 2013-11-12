@@ -41,6 +41,7 @@ protected:
 
 private:
     void init();
+    void initUi();
     void updateUi(WordInfo &info);
 
 public slots:

@@ -62,11 +62,6 @@
     <string>Show worlds</string>
    </property>
   </action>
-  <action name="actionTEST">
-   <property name="text">
-    <string>TEST!!!</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

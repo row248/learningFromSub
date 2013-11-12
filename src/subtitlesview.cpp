@@ -17,6 +17,7 @@ SubtitlesView::SubtitlesView(QWidget *parent) :
 {
     ui->setupUi(this);
     init();
+    initUi();
 }
 
 SubtitlesView::~SubtitlesView()
@@ -35,6 +36,12 @@ void SubtitlesView::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_T:
         translater->translate(word);
+        break;
+    case Qt::Key_S:
+        translater->sound(word);
+        break;
+    case Qt::Key_Equal:
+        favorite();
         break;
     }
 }
@@ -144,6 +151,21 @@ void SubtitlesView::init()
     connect(ui->icon, SIGNAL(clicked()), this, SLOT(favorite()));
 }
 
+void SubtitlesView::initUi()
+{
+    QFile style("/home/row/Documents/projects/LearningFromSub/src/resources/favorite_icon.qss");
+    if (style.open(QIODevice::ReadOnly)) {
+        ui->icon->setStyleSheet( QString(style.readAll()) );
+    }
+    ui->icon->setFixedSize(40,40);
+
+    ui->comboBox->addItem("Most Rare");
+    ui->comboBox->addItem("Most Often");
+    ui->comboBox->addItem("Random");
+    ui->comboBox->addItem("Match db");
+    ui->comboBox->addItem("Most db (random)");
+}
+
 void SubtitlesView::updateUi(WordInfo &info)
 {
     word = info.word;
@@ -158,12 +180,12 @@ void SubtitlesView::updateUi(WordInfo &info)
     bool is_favorite = subserv->is_favorite(db);
 
     if (is_favorite) {
-        ui->icon->setIcon(QIcon("/home/row/Desktop/close.png"));
+        ui->icon->setIcon(QIcon(":/Images/close.png"));
         ui->icon->setToolTip("Delete word from data base");
     } else if (word == NOTHING_FOUND) {
         ui->icon->setToolTip("Choose another option");
     } else {
-        ui->icon->setIcon(QIcon("/home/row/Desktop/add.gif"));
+        ui->icon->setIcon(QIcon(":/Images/add.gif"));
         ui->icon->setToolTip("Add word to data base");
     }
 }
