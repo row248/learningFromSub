@@ -66,10 +66,14 @@ QMap<QString, int> SubService::eatFile()
     QMap<QString, int> appearance;
 
     foreach(QString word, result) {
-        if (appearance.contains(word)) {
-            appearance[word]++;
-        } else {
-            appearance.insert(word, 1);
+
+        // Check if word does not contain digits
+        if (!word.contains(QRegExp("\\d"))) {
+            if (appearance.contains(word)) {
+                appearance[word]++;
+            } else {
+                appearance.insert(word, 1);
+            }
         }
     }
 
@@ -137,6 +141,22 @@ bool SubService::matchDb(SqlProvider &db)
 
     // Because count setted in @eatFile method
     count = words.count();
+
+    return any;
+}
+
+bool SubService::matchDbRandom(SqlProvider &db)
+{
+    bool any = matchDb(db);
+    if (any) {
+        // Shuffle words
+        qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+        for (int i=words.count()-1; i>0; --i) {
+            int random1 = qrand() % words.count();
+            int random2 = qrand() % words.count();
+            qSwap(words[random1], words[random2]);
+        }
+    }
 
     return any;
 }

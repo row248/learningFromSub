@@ -28,6 +28,7 @@ public slots:
     void previousWord();
     void playSound();
     void matchDb();
+    void matchDbRandom();
     void favorite();
 
     // If pressed key

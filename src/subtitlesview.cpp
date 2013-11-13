@@ -76,6 +76,17 @@ void SubtitlesView::matchDb()
     }
 }
 
+void SubtitlesView::matchDbRandom()
+{
+    bool any = subserv->matchDbRandom(db);
+
+    if (any) {
+        ui->icon->setEnabled(true);
+    } else {
+        ui->icon->setEnabled(false);
+    }
+}
+
 void SubtitlesView::showTranslate(QString str)
 {
     ui->translate->setHtml(str);
@@ -134,13 +145,14 @@ void SubtitlesView::init()
 
     // For purpose of giving db instance
     connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(matchDb()));
+    connect(ui->btn_mathDbRandom, SIGNAL(clicked()), this, SLOT(matchDbRandom()));
 
     // Update UI after click to buttons
     connect(ui->btn_mostRare, SIGNAL(clicked()), this, SLOT(update()));
     connect(ui->btn_mostOften, SIGNAL(clicked()), this, SLOT(update()));
     connect(ui->btn_random, SIGNAL(clicked()), this, SLOT(update()));
-
     connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(update()));
+    connect(ui->btn_mathDbRandom, SIGNAL(clicked()), this, SLOT(update()));
 
     // Translate events
     connect(translater, SIGNAL(gotTranslate(QString)), this, SLOT(showTranslate(QString)));

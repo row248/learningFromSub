@@ -38,6 +38,7 @@ public slots:
 
     // If no match exists, i add word @NOTHING_FOUND to @words
     bool matchDb(SqlProvider &db);
+    bool matchDbRandom(SqlProvider &db);
 
 private:
     WordInfo fillWordInfo();
