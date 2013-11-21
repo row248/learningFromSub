@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>637</width>
-    <height>361</height>
+    <height>371</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -46,11 +46,6 @@
    </widget>
    <addaction name="menuSubtitles"/>
    <addaction name="menuDatabase"/>
-  </widget>
-  <widget class="QStatusBar" name="statusBar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
   </widget>
   <action name="actionOpen">
    <property name="text">

@@ -29,10 +29,10 @@ void SubtitlesView::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Left:
-        previousWord();
+        subserv->prev();
         break;
     case Qt::Key_Right:
-        nextWord();
+        subserv->next();
         break;
     case Qt::Key_T:
         translater->translate(word);
@@ -44,47 +44,17 @@ void SubtitlesView::keyPressEvent(QKeyEvent *event)
         favorite();
         break;
     }
+
+    //
+    update();
 }
 
 void SubtitlesView::setFileName(QString str)
 {
     filename = str;
     subserv->setFileName(filename);
+    ui->statusBar->setText(QFileInfo(filename).fileName());
     update();
-}
-
-void SubtitlesView::nextWord()
-{
-    WordInfo word = subserv->next();
-    updateUi(word);
-}
-
-void SubtitlesView::previousWord()
-{
-    WordInfo word = subserv->prev();
-    updateUi(word);
-}
-
-void SubtitlesView::matchDb()
-{
-    bool any = subserv->matchDb(db);
-
-    if (any) {
-        ui->icon->setEnabled(true);
-    } else {
-        ui->icon->setEnabled(false);
-    }
-}
-
-void SubtitlesView::matchDbRandom()
-{
-    bool any = subserv->matchDbRandom(db);
-
-    if (any) {
-        ui->icon->setEnabled(true);
-    } else {
-        ui->icon->setEnabled(false);
-    }
 }
 
 void SubtitlesView::showTranslate(QString str)
@@ -114,16 +84,32 @@ void SubtitlesView::favorite()
     update();
 }
 
-void SubtitlesView::update()
+void SubtitlesView::optionsChanged(int i)
 {
-    WordInfo word = subserv->current();
-    updateUi(word);
-}
+    bool enableFavoriteIcon = true;
 
-void SubtitlesView::enableIcon()
-{
-    if (!ui->icon->isEnabled())
-        ui->icon->setEnabled(true);
+    switch (ui->options->itemData(i).toInt()) {
+    case Options::MostRare:
+        subserv->mostRare();
+        break;
+    case Options::MostOften:
+        subserv->mostOften();
+        break;
+    case Options::Random:
+        subserv->random();
+        break;
+    case Options::MatchDb:
+        enableFavoriteIcon = subserv->matchDb(db);
+        break;
+    case Options::MatchDbRandom:
+        enableFavoriteIcon = subserv->matchDbRandom(db);
+        break;
+    }
+
+    // Change all stuff
+    update();
+
+    ui->icon->setEnabled(enableFavoriteIcon);
 }
 
 void SubtitlesView::init()
@@ -131,28 +117,10 @@ void SubtitlesView::init()
     subserv = new SubService();
     translater = new Translater();
 
-    connect(ui->btnNext, SIGNAL(clicked()), this, SLOT(nextWord()));
-    connect(ui->btnPrev, SIGNAL(clicked()), this, SLOT(previousWord()));
-
-    connect(ui->btn_mostRare, SIGNAL(clicked()), subserv, SLOT(mostRare()));
-    connect(ui->btn_mostOften, SIGNAL(clicked()), subserv, SLOT(mostOften()));
-    connect(ui->btn_random, SIGNAL(clicked()), subserv, SLOT(random()));
-
-    // Icon may be disabled if @matchDb will nothig found
-    connect(ui->btn_mostRare, SIGNAL(clicked()), this, SLOT(enableIcon()));
-    connect(ui->btn_mostOften, SIGNAL(clicked()), this, SLOT(enableIcon()));
-    connect(ui->btn_random, SIGNAL(clicked()), this, SLOT(enableIcon()));
-
-    // For purpose of giving db instance
-    connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(matchDb()));
-    connect(ui->btn_mathDbRandom, SIGNAL(clicked()), this, SLOT(matchDbRandom()));
-
-    // Update UI after click to buttons
-    connect(ui->btn_mostRare, SIGNAL(clicked()), this, SLOT(update()));
-    connect(ui->btn_mostOften, SIGNAL(clicked()), this, SLOT(update()));
-    connect(ui->btn_random, SIGNAL(clicked()), this, SLOT(update()));
-    connect(ui->btn_matchDb, SIGNAL(clicked()), this, SLOT(update()));
-    connect(ui->btn_mathDbRandom, SIGNAL(clicked()), this, SLOT(update()));
+    connect(ui->btnNext, SIGNAL(clicked()), subserv, SLOT(next()));
+    connect(ui->btnPrev, SIGNAL(clicked()), subserv, SLOT(prev()));
+    connect(ui->btnPrev, SIGNAL(clicked()), this, SLOT(update()));
+    connect(ui->btnNext, SIGNAL(clicked()), this, SLOT(update()));
 
     // Translate events
     connect(translater, SIGNAL(gotTranslate(QString)), this, SLOT(showTranslate(QString)));
@@ -171,19 +139,25 @@ void SubtitlesView::initUi()
     }
     ui->icon->setFixedSize(40,40);
 
-    ui->comboBox->addItem("Most Rare");
-    ui->comboBox->addItem("Most Often");
-    ui->comboBox->addItem("Random");
-    ui->comboBox->addItem("Match db");
-    ui->comboBox->addItem("Most db (random)");
+    ui->options->addItem("Most Rare", Options::MostRare);
+    ui->options->addItem("Most Often", Options::MostOften);
+    ui->options->addItem("Random", Options::Random);
+    ui->options->addItem("Match db", Options::MatchDb);
+    ui->options->addItem("Most db (random)", Options::MatchDbRandom);
+
+    connect(ui->options, SIGNAL(activated(int)), this, SLOT(optionsChanged(int)));
 }
 
-void SubtitlesView::updateUi(WordInfo &info)
+void SubtitlesView::update()
 {
-    word = info.word;
+    // Fill struct
+    WordInfo wordInfo = subserv->current();
+    word = wordInfo.word;
+
+    db.updateWordStats(word);
 
     // Add +1 for human read
-    index = QString::number(info.index + 1) + "/" + QString::number(info.count);
+    index = QString::number(wordInfo.index + 1) + "/" + QString::number(wordInfo.count);
 
     ui->word->setText(word);
     ui->index->setText(index);

@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    this->setFixedSize(size());
     ui->setupUi(this);
     settings = new QSettings("learningFromSub");
     init();
@@ -30,7 +31,6 @@ void MainWindow::toSubView()
         addRecentFileAction(filename);
         subview->setFileName(filename);
         this->setCentralWidget(subview);
-        updateStatusBar(filename);
     }
 }
 
@@ -41,7 +41,6 @@ void MainWindow::toSubView(QAction *act)
     addRecentFileAction(filename);
     subview->setFileName(filename);
     this->setCentralWidget(subview);
-    updateStatusBar(filename);
 }
 
 void MainWindow::init()
@@ -66,13 +65,6 @@ void MainWindow::updateResetMenu()
             ui->menuResent->addAction(recentFileActions.at(i));
         }
     }
-}
-
-void MainWindow::updateStatusBar(QString filename)
-{
-//    ui->statusBar->showMessage(QFileInfo(filename).fileName());
-    fileNameStatusBar = new QLabel( QFileInfo(filename).fileName() );
-    ui->statusBar->addPermanentWidget( fileNameStatusBar );
 }
 
 void MainWindow::addRecentFileAction(QString filename)

@@ -7,7 +7,6 @@
 #include "headers/sqlprovider.h"
 
 class SubService;
-struct WordInfo;
 class Translater;
 
 namespace Ui {
@@ -18,18 +17,23 @@ class SubtitlesView : public QWidget
 {
     Q_OBJECT
 
+    enum Options {
+        MostRare = 0,
+        MostOften,
+        Random,
+        MatchDb,
+        MatchDbRandom
+    };
+
 public:
     explicit SubtitlesView(QWidget *parent = 0);
     ~SubtitlesView();
     void setFileName(QString str);
 
 public slots:
-    void nextWord();
-    void previousWord();
     void playSound();
-    void matchDb();
-    void matchDbRandom();
     void favorite();
+    void optionsChanged(int i);
 
     // If pressed key
     void showTranslate(QString str);
@@ -43,11 +47,9 @@ protected:
 private:
     void init();
     void initUi();
-    void updateUi(WordInfo &info);
 
 public slots:
     void update();
-    void enableIcon();
 
 public:
     QString word;
@@ -59,7 +61,6 @@ private:
     QString index;
     Translater *translater;
     SqlProvider db;
-
 };
 
 #endif // SUBTITLESVIEW_H

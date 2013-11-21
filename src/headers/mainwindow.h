@@ -25,7 +25,6 @@ public slots:
     // From resent files
     void toSubView(QAction *act);
     void updateResetMenu();
-    void updateStatusBar(QString filename);
 
 private:
     void init();

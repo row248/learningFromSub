@@ -21,19 +21,19 @@ Q_OBJECT
 
 public:
     void setFileName(QString _filename);
-    WordInfo next();
-    WordInfo prev();
     WordInfo current();
     bool is_favorite(SqlProvider &db);
 
 private:
-    // Return QMap without dublicate words with ther appearance count
+    // Return QMap without dublicate words with their appearance count
     QMap<QString, int> eatFile();
 
 public slots:
     // Functions to fill @words
     void mostRare();
     void mostOften();
+    void next();
+    void prev();
     void random();
 
     // If no match exists, i add word @NOTHING_FOUND to @words

@@ -20,17 +20,15 @@ void SubService::setFileName(QString _filename)
     mostRare();
 }
 
-WordInfo SubService::next()
+void SubService::next()
 {
     index++;
-    return fillWordInfo();
 }
 
 
-WordInfo SubService::prev()
+void SubService::prev()
 {
     index--;
-    return fillWordInfo();
 }
 
 WordInfo SubService::current()
